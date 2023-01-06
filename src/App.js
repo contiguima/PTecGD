@@ -1,10 +1,15 @@
-import logo from './logo.svg';
 import './App.css';
-
+import {BrowserRouter as Router, Routes, Route,} from "react-router-dom";
+import Formulario from './pages/Formulario';
 function App() {
   return (
     <div className="App">
-      <h1>Mi formulario</h1>
+      
+      <Router>
+        <Routes>
+          <Route path="/" element = {<Formulario/>}/>
+        </Routes>
+      </Router>
     </div>
   );
 }
