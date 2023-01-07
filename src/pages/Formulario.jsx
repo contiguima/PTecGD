@@ -1,35 +1,36 @@
 import formData from "../db.json";
 import { useState } from "react";
-import * as firebase from "../firebase"
+import {app} from "../firebase";
 import "../stylesheets/formulario.css"
+import Respuestas from './Respuestas';
+import { getFirestore, collection, addDoc, getDocs , doc, getDoc } from "firebase/firestore";
 
+const db = getFirestore(app);
 function Formulario() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
-  function handleSubmit(event) {
+ 
+  
+  const handleSubmit = async(event) =>  {
     event.preventDefault();
-    setLoading(true);
-    setSuccess(false);
-    setError(null);
-
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
-
-    firebase
-      .database()
-      .ref("encuestas")
-      .push(data)
-      .then(() => {
-        setLoading(false);
-        setSuccess(true);
+    console.log(data);
+    try {
+      await addDoc(collection(db,"datosEncuesta"), { 
+        ...data
       })
-      .catch(error => {
-        setLoading(false);
-        setError(error);
-      });
-  }
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+ 
+}
+
+ 
 
   function renderItem(item) {
     switch (item.type) {
@@ -51,14 +52,14 @@ function Formulario() {
         return (
           <div>
             <label htmlFor={item.name}>{item.label}</label>
-            <input type="date" name={item.name} required={item.required} />
+            <input type="date" name={item.name} required={item.required}  />
           </div>
         );
       case "select":
         return (
           <div>
             <label htmlFor={item.name}>{item.label}</label>
-            <select name={item.name} required={item.required}>
+            <select name={item.name} required={item.required} >
               {item.options.map(option => (
                 <option value={option.value}>{option.label}</option>
               ))}
@@ -77,14 +78,6 @@ function Formulario() {
       default:
         return null;
     }
-  }
-
-  if (success) {
-    return <p>Encuesta enviada con éxito</p>;
-  }
-
-  if (error) {
-    return <p>Error al enviar la encuesta: {error.message}</p>;
   }
 
   return <>
