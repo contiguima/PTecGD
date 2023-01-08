@@ -7,27 +7,30 @@ import { getFirestore, collection, addDoc, getDocs , doc, getDoc } from "firebas
 
 const db = getFirestore(app);
 function Formulario() {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
- 
-  
+
   const handleSubmit = async(event) =>  {
     event.preventDefault();
+    
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     console.log(data);
     try {
       await addDoc(collection(db,"datosEncuesta"), { 
         ...data
-      })
-      
+        
+      });
+      // Problema: VER por qué no cambia la variable pero si la lee
+      console.log(success);
+      setSuccess(true);
+      console.log("Después: ", success);
+      event.target.reset();       
     } catch (error) {
-      console.log(error)
-      
+      console.log(error);
     }
- 
+
+    
 }
 
  
