@@ -4,11 +4,11 @@ import {app} from "../firebase";
 import "../stylesheets/formulario.css"
 import Respuestas from './Respuestas';
 import { getFirestore, collection, addDoc, getDocs , doc, getDoc } from "firebase/firestore";
+import { Link } from "react-router-dom";
 
 const db = getFirestore(app);
-function Formulario() {
-    const [success, setSuccess] = useState(false);
-
+const Formulario = () => {
+var success = false; 
 
   const handleSubmit = async(event) =>  {
     event.preventDefault();
@@ -21,14 +21,19 @@ function Formulario() {
         ...data
         
       });
-      // Problema: VER por qué no cambia la variable pero si la lee
-      console.log(success);
-      setSuccess(true);
-      console.log("Después: ", success);
       event.target.reset();       
-    } catch (error) {
+      console.log("Antes: ",success);
+      success = true;
+      console.log("Después: ", success);
+      
+      
+    } catch (error) { 
       console.log(error);
-    }
+    };
+    
+    
+   
+    
 
     
 }
@@ -77,7 +82,10 @@ function Formulario() {
           </div>
         );
       case "submit":
-        return <button type="submit">{item.label}</button>;
+        return (<div>
+          <button type="submit">{item.label}</button>
+          </div>
+          );
       default:
         return null;
     }
@@ -90,8 +98,18 @@ function Formulario() {
     <p>Por favor, complete los siguientes datos</p>
       {formData.items.map(item => renderItem(item))}
     </form>
+    <p>Para acceder a las respuestas, hace click <Link to ="/respuestas">acá</Link> después de completar el formulario</p>
+    
+
     
     </>
 }
 
+
 export default Formulario;
+
+/*Ideas que no funcionaron
+
+1- {success ? <p>Anda</p> : <p>No</p>} No cambia cuando cambia de estado
+
+*/
